@@ -1,0 +1,20 @@
+name: Market Open Alert
+
+on:
+  schedule:
+    - cron: '30 13 * * 1-5'  # 9:30 AM ET (夏令 EDT)，冬令改為 '30 14 * * 1-5'
+  workflow_dispatch:          # 允許手動觸發測試
+
+jobs:
+  send-alert:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - run: python telegram_notify.py
+        env:
+          TELEGRAM_TOKEN:   ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
